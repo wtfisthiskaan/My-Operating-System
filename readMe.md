@@ -7,39 +7,40 @@ Firstly, I began the homework with trying to understand the operating system by 
 ## Systemcall Handler
 For the system calls, I use the snippet Viktor Engellman created for printf system call. The SystemcallHandler’s HandleInterrupt method handles the system calls with help of interrupts. When the interrupt comes with 0x80 interrupt index, the SystemcallHandler automatically handles the interrupt with it’s HandleInterrupt method. All the system calls are compatible with POSIX standarts.
 
-![](images/handler.png)
+<img src="images/handler.png" alt="Handler" width="40%">
 
-![](images/posix.png)
+<img src="images/posix.png" alt="Handler" width="40%">
+
 
 ## Fork
 
 The fork system call is implemented like the Figure 6. Let’s ignore the debugging protocols with print functions. It firstly sets up the pointers for child and parent process. After that, it copies the instruction pointer and code segment of parent process to child process. The stack duplication is handled afterwards. Since the cpustate values have to be same with parent process, it is copied. The base of the CPU state for the child is recalculated to ensure it points correctly within the newly copied stack. This involves calculating the offset from the base of the parent’s CPU state and adjusting the child’s CPU state pointer accordingly. After that, the child’s ecx value is set to 0 to distinguish parent and child process. When the child process’ pid returned to SystemcallHandler, it puts returned value to parent’s ecx value. Finally, the childTask is added.
 
-![](images/fork.png)
+<img src="images/fork.png" alt="Handler" width="40%">
 
 ## Execve
 
 The execve system call is more easy to understand, it basically changes the child process’ instruction pointer to newly given entrypoint and just returns the current tasks cpustate. It returns esp to interrrupt handler in SystemcallHandler. When I didn’t do it it just continues without doing execve.
 
-![](images/execve.png)
+<img src="images/execve.png" alt="Handler" width="40%">
 
 ## Waitpid
 
 The waitpid system call is very basic. It just sets the child pid’s isParentWaiting variable to true and sets parent processes status to BLOCKED. In the schedule system calls shown in section 4, it is guaranteed that the BLOCKED process is not scheduled.
 
-![](images/waitpid.png)
+<img src="images/waitpid.png" alt="Handler" width="40%">
 
 ## Exit
 
 The exit system call is as simple as waitpid. It just controls there are any parent process waiting for this process it just awake the parent process up by setting it’s state to READY. After that, it just sets it’s status to TERMINATED. In the schedule system calls shown in section 4, it is guaranteed that the TERMINATED process is not scheduled.
 
-![](images/exit.png)
+<img src="images/exit.png" alt="Handler" width="40%">
 
 ## Scheduler
 
 The schedule function is implemented like this. If processes are TERMINATED or BLOCKED, the process is not scheduled. It works with standart round robin style.
 
-![](images/schedule.png)
+<img src="images/schedule.png" alt="Handler" width="40%">
 
 
 
@@ -51,6 +52,6 @@ To run OS, you'll have to few packages to run this Operating System.
 -VirtualBox
 -melf-i386 tools etc.
 
-
-You can use 'make run' in terminal to run.
-You can use 'make clean' in terminal to clean everything up.
+```sh
+make run # Directly runs the OS.
+make clean # Cleaning
